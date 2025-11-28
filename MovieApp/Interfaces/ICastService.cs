@@ -8,7 +8,6 @@ namespace MovieApp.Interfaces
         Task<List<Cast>> GetAllCast();  
         Task<List<Cast>> GetMovieCast(int movieId);   // Movie = m.NumberOfCast
                                                     // Task<List<Cast>> GetMovieCast(int movieID);    // return list of cast
-
         Task<List<string>> GetFullNamesByMovie(int movieId);
 
     }

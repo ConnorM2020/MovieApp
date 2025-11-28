@@ -17,7 +17,7 @@ public class CastController(ICastService castService) : ControllerBase  // Contr
     [HttpGet("MovieCast")]
     public async Task<ActionResult<List<Cast>>> GetMovieCast(int movieID) => await castService.GetMovieCast(movieID); // implement this function from DbSet
 
-
+    
     [HttpGet("MovieCastMembers")]
     public async Task<ActionResult<List<string>>> GetFullNameByMovie(int movieId) => await castService.GetFullNamesByMovie(movieId);
 

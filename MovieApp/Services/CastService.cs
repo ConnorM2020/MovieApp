@@ -6,16 +6,18 @@ using MovieApp.Interfaces;
 namespace MovieApp.Services;
 public class CastService(MovieContext dbContext) : ICastService // Complete and use this CastService
 {
-
-    // Get all Cast
-    public async Task<List<Cast>> GetAllCast() 
-        => await dbContext.Casts.ToListAsync();
+    // Get all Cast from CastMovies
+    public async Task<List<Cast>> GetAllCast()
+        => await dbContext.Casts
+            .ToListAsync();
 
     public async Task<List<Cast>> GetMovieCast(int movieId) 
         => await dbContext.CastMovies
             .Where(cm => cm.MovieID == movieId)
             .Include(cm => cm.Cast).Select(cm => cm.Cast)                  
             .ToListAsync();
+
+   
 
     // Get all Cast for a Movie
     public async Task<List<string>> GetFullNamesByMovie(int movieId)

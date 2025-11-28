@@ -6,11 +6,12 @@ public class Movie  // Movie object with multiple attributes
     public string Title { get; set; } = string.Empty;       
     public string Description { get; set; } = string.Empty;        
     public int Rating { get; set; }        
-    public double Budget { get; set; }   
+    public decimal Budget { get; set; }   
     public int NumberOfCast { get; set; }
+    public MovieGenre genre { get; internal set; }
 
     // one movie, many cast links
     public ICollection<CastMovie> CastMovies { get; set; } = new List<CastMovie>();
-    public MovieGenre Genre { get; set; }
-       // can be used within MovieSeeData
+
+    // can be used within MovieSeeData
 }

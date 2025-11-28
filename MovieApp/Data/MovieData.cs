@@ -9,22 +9,28 @@ public class MovieContext(DbContextOptions<MovieContext> options) : DbContext(op
     public DbSet<Movie> Movies { get; set; } // List of Movie [DbSet]   
 
     public DbSet<Cast> Casts {  get; set; }  // DbSet for Cast & Movies 
-    public DbSet<CastMovie> CastMovies { get; set; }    // Connect between one - many Casts
+
+    public DbSet<CastMovie> CastMovies { get; set; }
+
     //  MovieContext will derive from DbContext
 
     // Create One to Many relationship - One Movie - Many Actors 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    modelBuilder.Entity<CastMovie>()
-        .HasOne(cm => cm.Cast)
-        .WithMany(c => c.CastMovies)
-        .HasForeignKey(cm => cm.CastID);
+    {
+        base.OnModelCreating(modelBuilder);
 
-    modelBuilder.Entity<CastMovie>()
-        .HasOne(cm => cm.Movie)
-        .WithMany(m => m.CastMovies)
-        .HasForeignKey(cm => cm.MovieID);
+        modelBuilder.Entity<CastMovie>()
+            .HasKey(cm => new { cm.CastID, cm.MovieID });
+
+        modelBuilder.Entity<CastMovie>()
+            .HasOne(cm => cm.Cast)
+            .WithMany(c => c.CastMovies)
+            .HasForeignKey(cm => cm.CastID);
+
+        modelBuilder.Entity<CastMovie>()
+            .HasOne(cm => cm.Movie)
+            .WithMany(m => m.CastMovies)
+            .HasForeignKey(cm => cm.MovieID);
     }
 
 

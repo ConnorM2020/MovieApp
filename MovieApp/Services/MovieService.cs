@@ -7,6 +7,8 @@ namespace MovieApp.Services;
 // SQL commands to reach to DB
 public class MovieService(MovieContext dbContext) : IMovieService
 {
+
+
     // Implementation of interface IMovieService
     public async Task<List<Movie>> GetAllMovies() => await dbContext.Movies.ToListAsync();
     // Get a Movie by title 
@@ -27,34 +29,49 @@ public class MovieService(MovieContext dbContext) : IMovieService
         var average = await dbContext.Movies.AverageAsync(m => m.Budget);
         return await dbContext.Movies.OrderBy(m => Math.Abs(m.Budget - average)).FirstAsync();
     }
-
     public async Task<Movie> GetHighestCastCount() => await dbContext.Movies.OrderByDescending(m => m.NumberOfCast).FirstOrDefaultAsync(); // Highest cast for a movie
 
-    
+    // Get all movies for given Genre
+    public async Task<List<Movie>> GetMoviesByGenre(MovieGenre genre) => await dbContext.Movies.Where(m => m.genre == genre).ToListAsync();
 
-    // highest, lowest and average budget
-    // public async Task<Movie> GetAverageBudget() => await dbContext.Movies.Average( m => m.Budget).Async();
+    //Get highest rated movie for each Genre
+    public async Task<List<Movie>> GetHighestRatedMovieByGenre()   // create controller method
+    {
+        var genres = await dbContext.Movies
+            .GroupBy(m => m.genre)  // SQL GROUP BY genre
+            .Select(g => new
+            {
+                Genre = g.Key,
+                HighestRatedMovie = g.OrderByDescending(m => m.Rating).FirstOrDefault() // Get the highest rated movie in the genre
+            })
+            .ToListAsync();
+        return genres.Select(g => g.HighestRatedMovie).ToList();
+    }
 
-
-    // Get the top rated movie
-
-    // Get the lowest rated movie
-
-    // Get the top 5 rated movies
-
-    // Get the lowerst 5 rated movies
-
-    // Get the movie with the highest budget 
-
-    // Get the movie with the lowest budget 
-
-    // Get the movie with the average budget 
-
-    // Get the movie with the highest number of cast memmbers 
-
-    // Get all the Movies for a given Genre.
-    // Do the Genre tast before doing this.
-
-    // Get the highest rated movie foreach Genre
-    // Do the Genre tast before doing this.
 }
+
+
+// highest, lowest and average budget
+
+
+// Get the top rated movie
+
+// Get the lowest rated movie
+
+// Get the top 5 rated movies
+
+// Get the lowerst 5 rated movies
+
+// Get the movie with the highest budget 
+
+// Get the movie with the lowest budget 
+
+// Get the movie with the average budget 
+
+// Get the movie with the highest number of cast memmbers 
+
+// Get all the Movies for a given Genre.
+// Do the Genre tast before doing this.
+
+// Get the highest rated movie foreach Genre
+// Do the Genre tast before doing this.

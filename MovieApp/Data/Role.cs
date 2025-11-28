@@ -1,6 +1,6 @@
 ﻿namespace MovieApp.Data
 {
-    public static class Role
+    public class Role
     {
 
         public const string Lead = "LEAD";

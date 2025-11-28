@@ -3,7 +3,7 @@ using MovieApp.Data;
 
 namespace MovieApp.Interfaces;
 
-public interface IMovieService   // Abtract interface class
+public interface IMovieService   // Abstract interface class
 {
     Task<List<Movie>> GetAllMovies();
     Task<List<Movie>> GetMovieTitle();
@@ -16,5 +16,10 @@ public interface IMovieService   // Abtract interface class
     Task<Movie> GetLowestBudget();
     Task<Movie> GetAverageBudget();
     Task<Movie> GetHighestCastCount();
+    Task<List<Movie>> GetMoviesByGenre(MovieGenre genre);
+    Task<List<Movie>> GetHighestRatedMovieByGenre();
+
+    // Get all the Movies for a given Genre.
+    // Get highest rated movie for each Genre
 
 }

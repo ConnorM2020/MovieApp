@@ -6,232 +6,68 @@ namespace MovieApp.Data
     {
         public static async Task SeedData(IServiceCollection services)
         {
-            using var scope = services.BuildServiceProvider().CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<MovieContext>();
+            var dbContext = services.BuildServiceProvider()
+                                    .CreateScope()
+                                    .ServiceProvider
+                                    .GetService<MovieContext>();
 
-            // optional: apply migrations
-            // await dbContext.Database.MigrateAsync();
-
-            // avoid reseeding if data exists
-            if (await dbContext.Movies.AnyAsync() ||
-                await dbContext.Casts.AnyAsync() ||
-                await dbContext.CastMovies.AnyAsync())
-            {
-                return;
-            }
-
-            // 1) Movies
-            var movies = new List<Movie>
-            {
-                new Movie
-                {
-                    ID = 1,
-                    Title = "Harry Potter and the Philosopher's Stone",
-                    Description = "First Harry Potter movie",
-                    Rating = 9,
-                    Budget = 125_000_000
-                },
-                new Movie
-                {
-                    ID = 13,
-                    Title = "The Dark Knight",
-                    Description = "Batman faces the Joker",
-                    Rating = 10,
-                    Budget = 185_000_000
-                }
-            };
-
-            await dbContext.Movies.AddRangeAsync(movies);
-
-            // 2) Cast (people only, no MovieID / Role / AmountPaid here)
             var castMembers = new List<Cast>
             {
-                new Cast
-                {
-                    ID = 1,
-                    FirstName = "Daniel",
-                    LastName = "Radcliffe",
-                    Age = 33
-                },
-                new Cast
-                {
-                    ID = 2,
-                    FirstName = "Emma",
-                    LastName = "Watson",
-                    Age = 32
-                },
-                new Cast
-                {
-                    ID = 3,
-                    FirstName = "Rupert",
-                    LastName = "Grint",
-                    Age = 34
-                },
-                new Cast
-                {
-                    ID = 4,
-                    FirstName = "Christian",
-                    LastName = "Bale",
-                    Age = 49
-                },
-                new Cast
-                {
-                    ID = 5,
-                    FirstName = "Heath",
-                    LastName = "Ledger",
-                    Age = 28
-                },
-                new Cast
-                {
-                    ID = 6,
-                    FirstName = "Gary",
-                    LastName = "Oldman",
-                    Age = 65
-                }
+                // HARRY POTTER – main trio
+                new Cast { ID = 1, FirstName = "Daniel",  LastName = "Radcliffe", Age = 33, AmountPaid = 10000000, Role = "Lead" },
+                new Cast { ID = 2, FirstName = "Emma",    LastName = "Watson",    Age = 32, AmountPaid =  9000000, Role = "Supporting" },
+                new Cast { ID = 3, FirstName = "Rupert",  LastName = "Grint",     Age = 34, AmountPaid =  8500000, Role = "Supporting" },
+
+                // Harry Potter – supporting             
+                new Cast { ID = 4, FirstName = "Alan",    LastName = "Rickman",   Age = 69, AmountPaid =  7000000, Role = "Supporting" },
+                new Cast { ID = 5, FirstName = "Tom",     LastName = "Felton",    Age = 35, AmountPaid =  3000000, Role = "Supporting" },
+                new Cast { ID = 6, FirstName = "Gary",    LastName = "Oldman",    Age = 65, AmountPaid =  6000000, Role = "Supporting" },
+                new Cast { ID = 7, FirstName = "Evanna",  LastName = "Lynch",     Age = 31, AmountPaid =  1500000, Role = "Supporting" },
+                new Cast { ID = 8, FirstName = "Ralph",   LastName = "Fiennes",   Age = 60, AmountPaid =  8000000, Role = "Lead" },
+
+                // EXTRA Harry Potter roles          
+                new Cast { ID = 19, FirstName = "Maggie",  LastName = "Smith",    Age = 88, AmountPaid =  5000000, Role = "Extra" },
+                new Cast { ID = 20, FirstName = "Matthew", LastName = "Lewis",    Age = 34, AmountPaid =  2000000, Role = "Extra" },
+
+                // LORD OF THE RINGS              
+                new Cast { ID = 9,  FirstName = "Elijah", LastName = "Wood",      Age = 42, AmountPaid =  7000000, Role = "Lead" },
+                new Cast { ID = 10, FirstName = "Ian",    LastName = "McKellen",  Age = 84, AmountPaid =  5000000, Role = "Supporting" },
+                new Cast { ID = 11, FirstName = "Viggo",  LastName = "Mortensen", Age = 64, AmountPaid =  6000000, Role = "Supporting" },
+                new Cast { ID = 12, FirstName = "Sean",   LastName = "Astin",     Age = 51, AmountPaid =  4000000, Role = "Supporting" },
+                new Cast { ID = 13, FirstName = "Andy",   LastName = "Serkis",    Age = 58, AmountPaid =  4500000, Role = "Supporting" },
+
+                // EXTRA LOTR roles            
+                new Cast { ID = 21, FirstName = "Orlando", LastName = "Bloom",    Age = 46, AmountPaid =  4500000, Role = "Extra" },
+                new Cast { ID = 22, FirstName = "Cate",    LastName = "Blanchett",Age = 54, AmountPaid =  4800000, Role = "Extra" },
+
+              
+                // BATMAN TRILOGY              
+                new Cast { ID = 14, FirstName = "Christian", LastName = "Bale",   Age = 49, AmountPaid = 15000000, Role = "Lead" },
+                new Cast { ID = 15, FirstName = "Liam",      LastName = "Neeson", Age = 71, AmountPaid =  4000000, Role = "Supporting" },
+                new Cast { ID = 16, FirstName = "Michael",   LastName = "Caine",  Age = 90, AmountPaid =  5000000, Role = "Supporting" },
+                new Cast { ID = 17, FirstName = "Heath",     LastName = "Ledger", Age = 28, AmountPaid =  5000000, Role = "Supporting" },
+                new Cast { ID = 18, FirstName = "Tom",       LastName = "Hardy",  Age = 45, AmountPaid =  6000000, Role = "Supporting" },
+
+             
+                // EXTRA Batman roles            
+                new Cast { ID = 23, FirstName = "Morgan", LastName = "Freeman",   Age = 86, AmountPaid =  5500000, Role = "Extra" },
+                new Cast { ID = 24, FirstName = "Anne",   LastName = "Hathaway",  Age = 40, AmountPaid =  5000000, Role = "Extra" }
             };
 
             await dbContext.Casts.AddRangeAsync(castMembers);
-
-            // 3) CastMovie (link table: who is in which movie, with role + pay)
-            var castMovies = new List<CastMovie>
-            {
-                // Harry Potter 1 (MovieID = 1)
-                new CastMovie
-                {
-                    Id = 1,
-                    CastID = 1,   // Daniel Radcliffe
-                    MovieID = 1,
-                    Role = Role.Lead,
-                    AmountPaid = 10_000_000
-                },
-                new CastMovie
-                {
-                    Id = 2,
-                    CastID = 2,   // Emma Watson
-                    MovieID = 1,
-                    Role = Role.Supporting,
-                    AmountPaid = 9_000_000
-                },
-                new CastMovie
-                {
-                    Id = 3,
-                    CastID = 3,   // Rupert Grint
-                    MovieID = 1,
-                    Role = Role.Supporting,
-                    AmountPaid = 8_500_000
-                },
-
-                // The Dark Knight (MovieID = 13)
-                new CastMovie
-                {
-                    Id = 4,
-                    CastID = 4,   // Christian Bale
-                    MovieID = 12,
-                    Role = Role.Lead,
-                    AmountPaid = 15_000_000
-                },
-                new CastMovie
-                {
-                    Id = 5,
-                    CastID = 5,   // Heath Ledger
-                    MovieID = 12,
-                    Role = Role.Supporting,
-                    AmountPaid = 5_000_000
-                },
-                new CastMovie
-                {
-                    Id = 6,
-                    CastID = 6,   // Gary Oldman
-                    MovieID = 12,
-                    Role = Role.Extra,
-                    AmountPaid = 4_000_000
-                },
-                new CastMovie
-                {
-                    Id = 4,
-                    CastID = 1,   // Daniel Radcliffe
-                    MovieID = 2,
-                    Role = Role.Lead,
-                    AmountPaid = 11_000_000
-                },
-                new CastMovie
-                {
-                    Id = 5,
-                    CastID = 2,   // Emma Watson
-                    MovieID = 2,
-                    Role = Role.Supporting,
-                    AmountPaid = 9_500_000
-                },
-                new CastMovie
-                {
-                    Id = 6,
-                    CastID = 3,   // Rupert Grint
-                    MovieID = 2,
-                    Role = Role.Supporting,
-                    AmountPaid = 9_000_000
-                },
-
-                // --------------------------
-                // Harry Potter 3 (MovieID = 3)
-                // --------------------------
-                new CastMovie
-                {
-                    Id = 7,
-                    CastID = 1,   // Daniel Radcliffe
-                    MovieID = 3,
-                    Role = Role.Lead,
-                    AmountPaid = 12_000_000
-                },
-                new CastMovie
-                {
-                    Id = 8,
-                    CastID = 2,   // Emma Watson
-                    MovieID = 3,
-                    Role = Role.Supporting,
-                    AmountPaid = 10_000_000
-                },
-                new CastMovie
-                {
-                    Id = 9,
-                    CastID = 3,   // Rupert Grint
-                    MovieID = 3,
-                    Role = Role.Supporting,
-                    AmountPaid = 9_250_000
-                },
-                new CastMovie
-                {
-                    Id = 10,
-                    CastID = 4,   // Christian Bale
-                    MovieID = 13,
-                    Role = Role.Lead,
-                    AmountPaid = 15_000_000
-                },
-                new CastMovie
-                {
-                    Id = 11,
-                    CastID = 5,   // Heath Ledger
-                    MovieID = 13,
-                    Role = Role.Supporting,
-                    AmountPaid = 5_000_000
-                },
-                new CastMovie
-                {
-                    Id = 12,
-                    CastID = 6,   // Gary Oldman
-                    MovieID = 13,
-                    Role = Role.Extra,
-                    AmountPaid = 4_000_000
-                }
-
-
-
-
-
-            };
-
-            await dbContext.CastMovies.AddRangeAsync(castMovies);
-
             await dbContext.SaveChangesAsync();
         }
     }
 }
+// HARRY POTTER – main trio 
+
+
+// Harry Potter – supporting
+// EXTRA Harry Potter roles
+
+
+// LORD OF THE RINGS
+// EXTRA LOTR roles
+
+// BATMAN TRILOGY
+// EXTRA Batman roles
