@@ -1,5 +1,4 @@
 ﻿using MovieApp.Data;
-
 public static class CastMovieSeedData
 {
     // Assign actors to specific movies

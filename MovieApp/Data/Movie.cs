@@ -11,6 +11,7 @@ public class Movie  // Movie object with multiple attributes
     public MovieGenre genre { get; internal set; }
 
     // one movie, many cast links
+    // one person, many movie links - CastMovie acts like SQL composite table
     public ICollection<CastMovie> CastMovies { get; set; } = new List<CastMovie>();
 
     // can be used within MovieSeeData

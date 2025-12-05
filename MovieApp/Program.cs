@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieApp.Data;
 using MovieApp.Interfaces;
 using MovieApp.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,13 @@ builder.Services.AddScoped<ICastService, CastService>();
 
 
 builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // This makes enums (like MovieGenre) use their string names in JSON & Swagger
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddDbContext<MovieContext>(opt => opt.UseInMemoryDatabase("MovieDB"));
 
 builder.Services.AddEndpointsApiExplorer();

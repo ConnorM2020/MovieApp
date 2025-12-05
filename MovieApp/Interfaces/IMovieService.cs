@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieApp.Data;
+using MovieApp.Dtos;
 
 namespace MovieApp.Interfaces;
 
@@ -18,6 +19,7 @@ public interface IMovieService   // Abstract interface class
     Task<Movie> GetHighestCastCount();
     Task<List<Movie>> GetMoviesByGenre(MovieGenre genre);
     Task<List<Movie>> GetHighestRatedMovieByGenre();
+    Task<List<MovieWithCastDto>> GetMovieCast();
 
     // Get all the Movies for a given Genre.
     // Get highest rated movie for each Genre

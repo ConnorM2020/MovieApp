@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieApp.Data;
+using MovieApp.Dtos;
 using MovieApp.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace MovieApp.Services;
 // SQL commands to reach to DB
 public class MovieService(MovieContext dbContext) : IMovieService
 {
-
-
     // Implementation of interface IMovieService
     public async Task<List<Movie>> GetAllMovies() => await dbContext.Movies.ToListAsync();
     // Get a Movie by title 
@@ -19,6 +19,27 @@ public class MovieService(MovieContext dbContext) : IMovieService
 
     // Get Movies that contain a title string.  SQL WHERE m.Title = search
     public async Task<List<Movie>> GetMovieBySearch(string search) => await dbContext.Movies.Where(m => m.Title.Contains(search)).ToListAsync();
+
+    // Get Movie ID, Title with corresponding cast f.name, s.name + Role
+    public async Task<List<MovieWithCastDto>> GetMovieCast()
+    {
+        return await dbContext.Movies
+            .Include(m => m.CastMovies)
+            .ThenInclude(cm => cm.Cast)
+            .Select(m => new MovieWithCastDto
+            {
+                Id = m.ID,
+                Title = m.Title,
+                Cast = m.CastMovies.Select(cm => new CastDto
+                {
+                    FirstName = cm.Cast.FirstName,
+                    LastName = cm.Cast.LastName,
+                    Role = cm.Cast.Role
+                })
+            })
+            .ToListAsync();
+    }
+
     // get top 5 and lowest 5
     public async Task<List<Movie>> GetTopFive() => await dbContext.Movies.OrderByDescending(m => m.Rating).Take(5).ToListAsync();
     public async Task<List<Movie>> GetBottomFive() => await dbContext.Movies.OrderBy(m => m.Rating).Take(5).ToListAsync();  // order by orientation
@@ -29,6 +50,7 @@ public class MovieService(MovieContext dbContext) : IMovieService
         var average = await dbContext.Movies.AverageAsync(m => m.Budget);
         return await dbContext.Movies.OrderBy(m => Math.Abs(m.Budget - average)).FirstAsync();
     }
+
     public async Task<Movie> GetHighestCastCount() => await dbContext.Movies.OrderByDescending(m => m.NumberOfCast).FirstOrDefaultAsync(); // Highest cast for a movie
 
     // Get all movies for given Genre
@@ -47,12 +69,9 @@ public class MovieService(MovieContext dbContext) : IMovieService
             .ToListAsync();
         return genres.Select(g => g.HighestRatedMovie).ToList();
     }
-
 }
 
-
 // highest, lowest and average budget
-
 
 // Get the top rated movie
 
@@ -60,7 +79,7 @@ public class MovieService(MovieContext dbContext) : IMovieService
 
 // Get the top 5 rated movies
 
-// Get the lowerst 5 rated movies
+// Get the lowest 5 rated movies
 
 // Get the movie with the highest budget 
 
@@ -68,7 +87,7 @@ public class MovieService(MovieContext dbContext) : IMovieService
 
 // Get the movie with the average budget 
 
-// Get the movie with the highest number of cast memmbers 
+// Get the movie with the highest number of cast members 
 
 // Get all the Movies for a given Genre.
 // Do the Genre tast before doing this.

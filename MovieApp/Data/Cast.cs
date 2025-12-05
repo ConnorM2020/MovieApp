@@ -14,10 +14,12 @@ public class Cast
 
     public double AmountPaid { get; set; }
     public string Role { get; set; }
+
+    // one person, many movie links - CastMovie acts like SQL composite table
     public ICollection<CastMovie> CastMovies { get; set; } = new List<CastMovie>();
     public Movie Movie { get; set; } = null!;
 
-    // one person, many movie links
+    
 
     /// Challenge
     /// 

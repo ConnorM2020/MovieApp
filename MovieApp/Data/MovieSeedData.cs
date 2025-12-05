@@ -19,8 +19,8 @@ namespace MovieApp.Data
                     Budget = 125_000_000m,
                     NumberOfCast = 25,
                     genre = MovieGenre.Fantasy  // definition from Movie.cs declaration
-
                 },
+                
                 new Movie
                 {
                     ID = 2,
@@ -152,8 +152,6 @@ namespace MovieApp.Data
                     genre = MovieGenre.Action
                 }
             };
-
-
             await dbContext.AddRangeAsync(movies);
             await dbContext.SaveChangesAsync();
         }
